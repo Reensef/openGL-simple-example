@@ -24,29 +24,29 @@ Shader::Shader(const char *vertexFile, const char *fragmentFile)
     const char *vertextSource = vertexCode.c_str();
     const char *fragmentSource = fragmentCode.c_str();
 
-    // Create Vertex Shader Object and get its reference
+    // Создаем объект вершинного шейдера
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    // Attach vertex shader source to the vertex shader object
+    // Объединяем объект вершинного шейдера с его кодом
     glShaderSource(vertexShader, 1, &vertextSource, NULL);
-    // Compile the vertex shader into machine code
+    // Компилируем шейдер
     glCompileShader(vertexShader);
 
-    // Create fragment Shader Object and get its reference
+    // Создаем объект фрагментного шейдера
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    // Attach fragment shader source to the fragment shader object
+    // Объединяем объект фрагментного шейдера с его кодом
     glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
-    // Compile the fragment shader into machine code
+    // Компилируем шейдер
     glCompileShader(fragmentShader);
 
-    // Create shader program object and get its reference
+    // Создаем объект программы шейдера
     ID = glCreateProgram();
-    // Attach the vertex and fragment shaders to the shader propgram
+    // Объединяем программу шейдера с объектами вершинного и фрагментного шейдера
     glAttachShader(ID, vertexShader);
     glAttachShader(ID, fragmentShader);
-    // Wrap-up/Link all the shaders together into the Shader program
+    // Связываем все в программе шейдера
     glLinkProgram(ID);
 
-    // Delete the now useless vertex and fragment shader object
+    // Удаляем отработавшие объекты
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }
