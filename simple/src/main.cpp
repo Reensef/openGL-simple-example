@@ -2,6 +2,20 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include "VAO.h"
+#include "VBO.h"
+#include "EBO.h"
+#include "shaderClass.h"
+
+GLfloat vertices[] = {
+    //             COORDINATE     /         COLORS         //
+    -0.5f, 0.5f, 0.0f, 0.0f, 128 / 255.0f, 255 / 255.0f,
+    0.5f, 0.5f, 0.0f, 255 / 255.0f, 0 / 255.0f, 0 / 255.0f,
+    0.5f, -0.5f, 0.0f, 0 / 255.0f, 153 / 255.0f, 0 / 255.0f,
+    -0.5f, -0.5f, 0.0f, 255 / 255.0f, 255 / 255.0f, 51 / 255.0f};
+
+GLuint indexes[] = {
+    0, 1, 2, 3};
 
 int main()
 {
@@ -34,6 +48,20 @@ int main()
     // В этом случае сцена начинается с координат 0,0 и имеет размер 800x800
     glViewport(0, 0, 800, 800);
 
+    Shader shaderProgram("src/shaders/default.vert", "src/shaders/default.frag");
+
+    VAO VAO1;
+    VAO1.bind();
+
+    VBO VBO1(vertices, sizeof(vertices));
+    EBO EBO1(indexes, sizeof(indexes));
+
+    VAO1.linkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void *)0);
+    VAO1.linkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+    VAO1.unbind();
+    VBO1.unbind();
+    EBO1.unbind();
+
     // Основной цикл программы
     while (!glfwWindowShouldClose(window))
     {
@@ -41,6 +69,14 @@ int main()
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         // Очищаем задний буфер и устанавливаем цвет фона
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // Активируем программу шейдер
+        shaderProgram.activate();
+        // Скажем OpenGL использовать VBO
+        VAO1.bind();
+        // Скажем OpenGL нарисовать фигуру с 4 вершинами
+        glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, 0);
+
         // Меняем задний и передний буферы местами
         glfwSwapBuffers(window);
         // Запускаем все события, необходимые для работы GLFW
