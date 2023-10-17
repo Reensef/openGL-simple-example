@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "c++ config",
+            "includePath": [
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/../OpenGL/GLFW/include",
+                "${workspaceFolder}/../OpenGL/glad/include"
+            ],
+            "compilerPath": "c:\\msys64\\mingw64\\bin\\g++.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "gcc-x86"
+        }
+    ],
+    "version": 4
+}
