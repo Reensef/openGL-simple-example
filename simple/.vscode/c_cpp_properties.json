@@ -5,11 +5,12 @@
             "includePath": [
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/../OpenGL/GLFW/include",
-                "${workspaceFolder}/../OpenGL/glad/include"
+                "${workspaceFolder}/../OpenGL/glad/include",
+                "${workspaceFolder}/../stb"
             ],
             "compilerPath": "c:\\msys64\\mingw64\\bin\\g++.exe",
-            "cStandard": "c11",
-            "cppStandard": "c++11",
+            "cStandard": "c20",
+            "cppStandard": "c++20",
             "intelliSenseMode": "gcc-x86"
         }
     ],
