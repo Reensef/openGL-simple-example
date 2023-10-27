@@ -19,6 +19,33 @@ GLfloat vertices[] = {
 GLuint indexes[] = {
     0, 1, 2, 3};
 
+void transform()
+{
+    // переменная для направления анимации
+    static bool isStretch = true;
+    // шаг трансформации
+    GLfloat step = 0.01;
+
+    if (isStretch) {
+        vertices[2 * 8] += step;
+        vertices[3 * 8] -= step;
+
+        if (vertices[2 * 8] >= 0.7f) {
+            isStretch = false;
+        }
+    } else {
+        vertices[2 * 8] -= step;
+        vertices[3 * 8] += step;
+
+        if (vertices[2 * 8] <= 0.5f) {
+            isStretch = true;
+        }
+    }
+    // обновление данных в буфере
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 2 * 8, sizeof(GLfloat), new GLfloat(vertices[2*8]));
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * 8, sizeof(GLfloat), new GLfloat(vertices[3*8]));
+}
+
 int main()
 {
     // Инициализируем GLFW
@@ -73,6 +100,8 @@ int main()
 
     grav_tex.texUnit(shaderProgram, "tex0", 0);
 
+    double prevTime = glfwGetTime();
+
     // Основной цикл программы
     while (!glfwWindowShouldClose(window))
     {
@@ -82,6 +111,20 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
         // Активируем программу шейдер
         shaderProgram.activate();
+        
+        // анимация c шагом в 0.01 секунды
+        double currTime = glfwGetTime();
+        if (currTime - prevTime >= 0.1) {
+            // скажем OpenGL использовать VBO
+            VBO1.bind();
+            // Произедем шаг трансформации
+            transform();
+            // обновим данные в VBO
+            VAO1.linkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void *)0);
+            // обновим время
+            prevTime = currTime;
+        }
+
         // Скажем OpenGL использовать текстуру
         grav_tex.bind();
         // Скажем OpenGL использовать VBO
