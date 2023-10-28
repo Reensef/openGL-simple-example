@@ -15,6 +15,7 @@
 				"-L${workspaceRoot}/../OpenGL/GLFW/lib-mingw-w64",
 				"-I${workspaceRoot}/../OpenGL/glad/include",
 				"-I${workspaceRoot}/../stb",
+				"-I${workspaceRoot}/../glm",
 				"-static",
 				"-lopengl32",
 				"-lglfw3",

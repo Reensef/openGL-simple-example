@@ -2,6 +2,10 @@
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+
 #include <iostream>
 #include "VAO.h"
 #include "VBO.h"
@@ -9,15 +13,25 @@
 #include "shader.h"
 #include "texture.h"
 
-GLfloat vertices[] = {
-    //             COORDINATE     /         COLORS      / TEXTURE COORDINATE
-    -0.5f, 0.5f, 0.0f, 0.0f, 128 / 255.0f, 255 / 255.0f, 0.0f, 0.0f,
-    0.5f, 0.5f, 0.0f, 255 / 255.0f, 0 / 255.0f, 0 / 255.0f, 0.0f, 1.0f,
-    0.5f, -0.5f, 0.0f, 0 / 255.0f, 153 / 255.0f, 0 / 255.0f, 1.0f, 1.0f,
-    -0.5f, -0.5f, 0.0f, 255 / 255.0f, 255 / 255.0f, 51 / 255.0f, 1.0f, 0.0f};
+GLfloat vertices[] =
+{ //     COORDINATES     /        COLORS      /   TexCoord  //
+	-0.5f, 0.0f, -0.5f,     0.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+	-0.5f, 0.0f,  0.5f,     0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+	 0.5f, 0.0f,  0.5f,     0.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+	 0.5f, 0.0f, -0.5f,     0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+	 0.0f, 0.8f,  0.0f,     0.0f, 0.6f, 0.0f,	0.5f, 1.0f,
+	 0.0f, -0.8f,  0.0f,     0.0f, 0.6f, 0.0f,	0.5f, 1.0f,
+};
 
 GLuint indexes[] = {
-    0, 1, 2, 3};
+    4,0,1,
+    4,1,2,
+    4,2,3,
+    4,3,0,
+    5,0,1,
+    5,1,2,
+    5,2,3,
+    5,3,0,};
 
 int main()
 {
@@ -73,21 +87,59 @@ int main()
 
     grav_tex.texUnit(shaderProgram, "tex0", 0);
 
+	float rotation = 0.0f;
+	double prevTime = glfwGetTime();
+
+	// Enables the Depth Buffer
+	glEnable(GL_DEPTH_TEST);
+    
     // Основной цикл программы
     while (!glfwWindowShouldClose(window))
     {
         // Указываем цвет фона
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         // Очищаем задний буфер и устанавливаем цвет фона
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Активируем программу шейдер
         shaderProgram.activate();
+
+        // Таймер для анимации
+		double crntTime = glfwGetTime();
+		if (crntTime - prevTime >= 0.05)
+		{
+			rotation += 2.0f;
+			prevTime = crntTime;
+		}
+
+        // Создадим матрицу модели, содержащей единицы
+        glm::mat4 model = glm::mat4(1.0f);
+        // Создадим матрицу вида, содержащей единицы
+        glm::mat4 view = glm::mat4(1.0f);
+        // Создадим матрицу проекции, содержащей единицы
+        glm::mat4 proj = glm::mat4(1.0f);
+
+        // Повернем фигуру на 45 градусов
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        // Отодвинем фигуру от нас
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        // Скажем не обрезать фигуру,
+        // если она находиться от нас от 0.1 до 100.0
+		proj = glm::perspective(glm::radians(45.0f), (float)800 / 800, 0.1f, 100.0f);
+
+        // Выводим матрицы в вершинный шейдер
+		int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
+
         // Скажем OpenGL использовать текстуру
         grav_tex.bind();
         // Скажем OpenGL использовать VBO
         VAO1.bind();
         // Скажем OpenGL нарисовать фигуру с 4 вершинами
-        glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(indexes) / sizeof(int), GL_UNSIGNED_INT, 0);
         // Меняем задний и передний буферы местами
         glfwSwapBuffers(window);
         // Запускаем все события, необходимые для работы GLFW

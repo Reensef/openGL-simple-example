@@ -6,7 +6,8 @@
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/../OpenGL/GLFW/include",
                 "${workspaceFolder}/../OpenGL/glad/include",
-                "${workspaceFolder}/../stb"
+                "${workspaceFolder}/../stb",
+                "${workspaceFolder}/../glm"
             ],
             "compilerPath": "c:\\msys64\\mingw64\\bin\\g++.exe",
             "cStandard": "c20",
