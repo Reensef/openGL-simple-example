@@ -21,6 +21,7 @@ public:
     glm::vec3 orientation = glm::vec3(0.0f, 0.0f, -1.0f);
     // наклон камеры
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::mat4 cameraMatrix = glm::mat4(1.0f);
 
     // переменная для предотвращения рывков камеры
     bool firstClick = true;
@@ -36,14 +37,18 @@ public:
 
     /*!
         \brief Функция создает и отправляет матрицы вида и проекции в шейдер
-        \param FOVdeg - поле зрения камеры
-        \param nearPlane - минимальная дистанция для отрисовки
-        \param farPlane - максимальная дистанция для отрисовки
         \param shader - шейдер
         \param uniform - униформа
     */
-    void matrix(float FOVdeg, float nearPlane, float farPlane, Shader &shader,
-                const char *uniform);
+    void matrix(Shader &shader, const char *uniform);
+
+    /*!
+        \brief Функция для обновления матриц
+        \param FOVdeg - поле зрения камеры
+        \param nearPlane - минимальная дистанция для отрисовки
+        \param farPlane - максимальная дистанция для отрисовки
+    */
+    void updateMatrix(float FOVdeg, float nearPlane, float farPlane);
 
     /*!
         \brief Функция для обработки входных данных

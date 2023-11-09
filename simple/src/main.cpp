@@ -110,8 +110,10 @@ int main()
 
     // Включаем управление камеры
     camera.inputs(window);
-    // Создание и управление матрицами вида и проекции
-    camera.matrix(45.0f, 0.1f, 100.0f, shaderProgram, "cameraMatrix");
+    // Обвновление матриц проекции и вида
+    camera.updateMatrix(45.0f, 0.1f, 100.0f);
+    // Привязка матриц к вводу шейдера
+    camera.matrix(shaderProgram, "cameraMatrix");
 
     // Создадим матрицу модели, содержащей единицы
     glm::mat4 model = glm::mat4(1.0f);
