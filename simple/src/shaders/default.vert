@@ -12,13 +12,12 @@ out vec3 color;
 out vec2 texCoord;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 proj;
+uniform mat4 cameraMatrix;
 
 void main()
 {
     // Получаем позиции из матриц
-    gl_Position = proj * view * model * vec4(aPos, 1.0);
+    gl_Position = cameraMatrix * model * vec4(aPos, 1.0);
     // Получаем цвета из массива вершин
     color = aColor;
     // Получаем координаты тектсуры
