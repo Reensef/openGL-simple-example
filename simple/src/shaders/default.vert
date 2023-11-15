@@ -14,10 +14,12 @@ out vec3 color;
 out vec2 texCoord;
 // Вывод координат нормали
 out vec3 normal;
+// Вывод координат текущей позиции
 out vec3 crntPos;
 
+// Получаем матрицу объекта
 uniform mat4 model;
-// uniform mat4 model2;
+// Получаем матрицу камеры
 uniform mat4 cameraMatrix;
 
 void main()
