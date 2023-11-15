@@ -242,7 +242,17 @@ int main()
     glfwPollEvents();
   }
 
+  // Освобождаем память
+  VAO1.remove();
+  VBO1.remove();
+  EBO1.remove();
   grav_tex.remove();
+  shaderProgram.remove();
+  lightVAO.remove();
+  lightVBO.remove();
+  lightEBO.remove();
+  lightShader.remove();
+
   // Удаляем окно
   glfwDestroyWindow(window);
   // Завершаем работу GLFW
